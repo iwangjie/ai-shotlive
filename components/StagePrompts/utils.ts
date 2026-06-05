@@ -160,5 +160,5 @@ export const filterShots = (shots: Shot[], searchQuery: string): Shot[] => {
  * 生成默认视频提示词
  */
 export const getDefaultVideoPrompt = (shot: Shot): string => {
-  return `${shot.actionSummary}\n\n镜头运动：${shot.cameraMovement}\n模型：${shot.videoModel || 'sora-2'}`;
+  return `${shot.actionSummary}\n\n镜头运动：${shot.cameraMovement}\n模型：${shot.videoModel || 'veo_3_1-fast'}`;
 };

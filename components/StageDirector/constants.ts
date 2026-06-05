@@ -29,7 +29,7 @@ export const STYLES = {
 
 // 视频提示词模板
 export const VIDEO_PROMPT_TEMPLATES = {
-  sora2: {
+  asyncVideo: {
     chinese: `基于提供的参考图片生成视频。
 
 动作描述：{actionSummary}
@@ -57,7 +57,7 @@ Technical Requirements:
   
   // 九宫格分镜模式的视频提示词（异步模型专用，精简版，避免超过8192字符限制）
   // 保留9个面板的景别/角度顺序，但description截断控制总长度
-  sora2NineGrid: {
+  asyncVideoNineGrid: {
     chinese: `⚠️ 最高优先级指令：参考图是3x3九宫格分镜板，严禁在视频中展示！视频第一帧必须是面板1的全屏场景画面。
 ⛔ 绝对禁止：不要在视频任何帧展示九宫格原图、网格画面、缩略图集或多画面拼贴。
 
@@ -93,7 +93,7 @@ Maintain character consistency, cinematic quality. Language: {language}.`
 
 // 默认配置
 export const DEFAULTS = {
-  videoModel: 'sora-2' as const,
+  videoModel: 'veo_3_1-fast' as const,
   batchGenerateDelay: 3000, // 批量生成延迟（毫秒）
 };
 

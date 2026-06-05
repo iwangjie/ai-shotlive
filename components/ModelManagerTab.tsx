@@ -161,7 +161,7 @@ const ModelManagerTab: React.FC<ModelManagerTabProps> = ({ onConfigChange }) => 
               推荐使用 AiShotlive API
             </h3>
             <p className="text-xs text-[var(--text-tertiary)] mb-3 leading-relaxed">
-              支持 GPT-5.1、Gemini-3、Veo 3.1、Sora-2 等多种模型，稳定快速，价格优惠。
+              支持 GPT-5.5、Gemini-3.1、Veo 3.1、豆包 Seedance 2.0、可灵 VIDEO 3.0 等多种模型，稳定快速，价格优惠。
               本开源项目由 AiShotlive API 提供支持。
             </p>
             <div className="flex items-center gap-3">

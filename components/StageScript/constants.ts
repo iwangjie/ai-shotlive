@@ -72,10 +72,12 @@ export const LANGUAGE_OPTIONS = [
 ];
 
 export const MODEL_OPTIONS = [
-  { label: 'GPT-5.1 (推荐)', value: 'gpt-5.1' },
+  { label: 'GPT-5.5 (推荐)', value: 'gpt-5.5' },
   { label: 'GPT-5.2', value: 'gpt-5.2' },
-  { label: 'GPT-4.1', value: 'gpt-41' },
-  { label: 'Claude Sonnet 4.5', value: 'claude-sonnet-4-5-20250929' },
+  { label: 'Claude Opus 4.8', value: 'claude-opus-4-8' },
+  { label: 'Claude Sonnet 4.6', value: 'claude-sonnet-4-6' },
+  { label: 'DeepSeek V4 Pro', value: 'deepseek-v4-pro' },
+  { label: 'Qwen3.7 Max', value: 'qwen3.7-max' },
   { label: '其他 (自定义)', value: 'custom' }
 ];
 
@@ -99,6 +101,6 @@ export const STYLES = {
 export const DEFAULTS = {
   duration: '60s',
   language: '中文',
-  model: 'gpt-5.1',
+  model: 'gpt-5.5',
   visualStyle: 'live-action'
 };

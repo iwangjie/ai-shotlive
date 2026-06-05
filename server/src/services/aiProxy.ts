@@ -751,18 +751,90 @@ export interface ImageGenerationResult {
   originalUrl?: string; // API 返回的原始 URL（如 TOS 签名 URL），用于传给仅接受 URL 的 API
 }
 
+const isGptImageModel = (modelId: string): boolean => modelId.startsWith('gpt-image-');
+
+const mapAspectRatioToOpenAIImageSize = (aspectRatio: string): string => {
+  switch (aspectRatio) {
+    case '16:9': return '1536x1024';
+    case '9:16': return '1024x1536';
+    case '1:1': return '1024x1024';
+    default: return 'auto';
+  }
+};
+
+const extractImageGenerationResult = async (response: any): Promise<ImageGenerationResult> => {
+  const items = response?.data;
+  if (Array.isArray(items) && items.length > 0) {
+    if (items[0].b64_json) {
+      return { base64: `data:image/png;base64,${items[0].b64_json}` };
+    }
+    if (items[0].url) {
+      const originalUrl = items[0].url;
+      const base64 = await downloadAsBase64(originalUrl, 'image/png');
+      console.log(`  🔗 [aiProxy] OpenAI-image: 已保存原始 URL (${originalUrl.substring(0, 60)}...)`);
+      return { base64, originalUrl };
+    }
+  }
+
+  throw new Error('图片生成失败：未能从响应中提取图片数据');
+};
+
 export const generateOpenAIImage = async (params: OpenAIImageParams): Promise<ImageGenerationResult> => {
-  const { apiBase, apiKey, endpoint, modelId, prompt, referenceImages } = params;
+  const { apiBase, apiKey, endpoint, modelId, prompt, referenceImages, aspectRatio } = params;
+  const authorization = `Bearer ${apiKey.replace(/^Bearer\s+/i, '')}`;
+  const isOpenAIGptImage = isGptImageModel(modelId);
+
+  if (isOpenAIGptImage && referenceImages.length > 0) {
+    const formData = new FormData();
+    formData.append('model', modelId);
+    formData.append('prompt', prompt);
+    formData.append('size', mapAspectRatioToOpenAIImageSize(aspectRatio));
+
+    let appended = 0;
+    for (const img of referenceImages) {
+      if (!img || !/^data:image\/[a-z]+;base64,/i.test(img)) continue;
+      formData.append('image[]', base64ToBlob(img), `reference-${appended}.png`);
+      appended++;
+    }
+
+    if (appended === 0) {
+      console.warn(`  ⚠️ [aiProxy] OpenAI image edit: 没有可用的 base64 参考图，改用纯文生图`);
+    } else {
+      const editEndpoint = endpoint.replace('/generations', '/edits');
+      const response = await retryOp(async () => {
+        const res = await fetch(`${apiBase}${editEndpoint}`, {
+          method: 'POST',
+          headers: { 'Authorization': authorization },
+          body: formData,
+        });
+        if (!res.ok) {
+          const errMsg = await parseError(res);
+          const err: any = new Error(errMsg);
+          err.status = res.status;
+          throw err;
+        }
+        return await res.json();
+      });
+      return extractImageGenerationResult(response);
+    }
+  }
 
   const requestBody: Record<string, any> = {
     model: modelId,
     prompt,
-    size: '2K',
-    response_format: 'url',
-    sequential_image_generation: 'disabled',
-    stream: false,
-    watermark: false,
+    size: isOpenAIGptImage ? mapAspectRatioToOpenAIImageSize(aspectRatio) : '2K',
   };
+
+  if (isOpenAIGptImage) {
+    console.log(`  🖼️ [aiProxy] OpenAI GPT Image request: model=${modelId}, endpoint=${endpoint}, size=${requestBody.size}, refs=${referenceImages.length}`);
+  }
+
+  if (!isOpenAIGptImage) {
+    requestBody.response_format = 'url';
+    requestBody.sequential_image_generation = 'disabled';
+    requestBody.stream = false;
+    requestBody.watermark = false;
+  }
 
   // Seedream API 的 image 参数同时支持 URL 和 base64 data URI
   // 格式: data:image/<format>;base64,<data>（format 必须小写，如 png、jpeg）
@@ -779,12 +851,12 @@ export const generateOpenAIImage = async (params: OpenAIImageParams): Promise<Im
       console.warn(`  ⚠️ [aiProxy] OpenAI-image: 跳过不支持的参考图格式 (${img.substring(0, 40)}...)`);
     }
   }
-  if (validImages.length > 0) {
+  if (!isOpenAIGptImage && validImages.length > 0) {
     requestBody.image = validImages;
     const urlCount = validImages.filter(i => /^https?:\/\//i.test(i)).length;
     const b64Count = validImages.length - urlCount;
     console.log(`  🖼️ [aiProxy] OpenAI-image: 使用 ${validImages.length} 张参考图 (${urlCount} URL + ${b64Count} base64)`);
-  } else if (referenceImages.length > 0) {
+  } else if (!isOpenAIGptImage && referenceImages.length > 0) {
     console.warn(`  ⚠️ [aiProxy] OpenAI-image: 没有可用的参考图（共 ${referenceImages.length} 张均不支持）`);
   }
 
@@ -793,9 +865,7 @@ export const generateOpenAIImage = async (params: OpenAIImageParams): Promise<Im
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey.replace(/^Bearer\s+/i, '')}`.startsWith('Bearer ')
-          ? `Bearer ${apiKey.replace(/^Bearer\s+/i, '')}`
-          : `Bearer ${apiKey}`,
+        'Authorization': authorization,
       },
       body: JSON.stringify(requestBody),
     });
@@ -808,20 +878,7 @@ export const generateOpenAIImage = async (params: OpenAIImageParams): Promise<Im
     return await res.json();
   });
 
-  const items = (response as any)?.data;
-  if (Array.isArray(items) && items.length > 0) {
-    if (items[0].b64_json) {
-      return { base64: `data:image/png;base64,${items[0].b64_json}` };
-    }
-    if (items[0].url) {
-      const originalUrl = items[0].url;
-      const base64 = await downloadAsBase64(originalUrl, 'image/png');
-      console.log(`  🔗 [aiProxy] OpenAI-image: 已保存原始 URL (${originalUrl.substring(0, 60)}...)`);
-      return { base64, originalUrl };
-    }
-  }
-
-  throw new Error('图片生成失败：未能从响应中提取图片数据');
+  return extractImageGenerationResult(response);
 };
 
 // ============================================

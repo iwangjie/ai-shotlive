@@ -580,6 +580,24 @@ const sanitizeBearerToken = (apiKey: string): string => {
   return 'Bearer ' + apiKey.replace(/Bearer\s+/gi, '').trim();
 };
 
+const isGptImageModel = (modelId: string): boolean => modelId.startsWith('gpt-image-');
+
+const mapAspectRatioToOpenAIImageSize = (aspectRatio: AspectRatio): string => {
+  switch (aspectRatio) {
+    case '16:9': return '1536x1024';
+    case '9:16': return '1024x1536';
+    case '1:1': return '1024x1024';
+    default: return 'auto';
+  }
+};
+
+const dataUrlToBlob = (dataUrl: string): Blob => {
+  const [meta, base64] = dataUrl.split(',');
+  const mime = meta.match(/data:(.*?);base64/)?.[1] || 'image/png';
+  const bytes = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
+  return new Blob([bytes], { type: mime });
+};
+
 /**
  * 使用 OpenAI / 火山引擎兼容的 /images/generations 格式生成图片
  */
@@ -593,19 +611,70 @@ const generateImageOpenAI = async (
   modelId: string,
   startTime: number
 ): Promise<string> => {
+  const isOpenAIGptImage = isGptImageModel(modelId);
+
+  if (isOpenAIGptImage && referenceImages.length > 0) {
+    const formData = new FormData();
+    formData.append('model', modelId);
+    formData.append('prompt', prompt);
+    formData.append('size', mapAspectRatioToOpenAIImageSize(aspectRatio));
+
+    let appended = 0;
+    for (const img of referenceImages) {
+      if (!img || !img.startsWith('data:image/')) continue;
+      formData.append('image[]', dataUrlToBlob(img), `reference-${appended}.png`);
+      appended++;
+    }
+
+    if (appended > 0) {
+      const editEndpoint = endpoint.replace('/generations', '/edits');
+      const response = await retryOperation(async () => {
+        const res = await fetch(`${apiBase}${editEndpoint}`, {
+          method: 'POST',
+          headers: { 'Authorization': sanitizeBearerToken(apiKey) },
+          body: formData,
+        });
+
+        if (!res.ok) {
+          let errorMessage = `HTTP错误: ${res.status}`;
+          try {
+            const errorData = await res.json();
+            errorMessage = errorData.error?.message || errorData.message || errorMessage;
+          } catch {
+            try {
+              const errorText = await res.text();
+              if (errorText) errorMessage = errorText;
+            } catch { /* ignore */ }
+          }
+          const err: any = new Error(errorMessage);
+          err.status = res.status;
+          throw err;
+        }
+        return await res.json();
+      });
+
+      const b64 = response?.data?.[0]?.b64_json;
+      if (b64) return `data:image/png;base64,${b64}`;
+      throw new Error('图片生成失败：未能从响应中提取图片数据');
+    }
+  }
+
   const requestBody: Record<string, any> = {
     model: modelId,
     prompt: prompt,
-    size: '2K',
-    response_format: 'url',
-    sequential_image_generation: 'disabled',
-    stream: false,
-    watermark: false,
+    size: isOpenAIGptImage ? mapAspectRatioToOpenAIImageSize(aspectRatio) : '2K',
   };
+
+  if (!isOpenAIGptImage) {
+    requestBody.response_format = 'url';
+    requestBody.sequential_image_generation = 'disabled';
+    requestBody.stream = false;
+    requestBody.watermark = false;
+  }
 
   // 豆包 Seedream API 的 image 参数只接受 URL（不支持 base64 输入）
   // 对 base64 参考图尝试从缓存中查找对应的 TOS URL
-  if (referenceImages.length > 0) {
+  if (!isOpenAIGptImage && referenceImages.length > 0) {
     const validUrls: string[] = [];
     let skippedCount = 0;
     for (const img of referenceImages) {

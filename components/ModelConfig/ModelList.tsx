@@ -65,7 +65,7 @@ function getModelVendorTag(model: ModelDefinition): string {
   const id = model.id.toLowerCase();
   const name = model.name.toLowerCase();
 
-  if (id.startsWith('gpt-') || id.startsWith('gpt4') || id === 'gpt-41' || id === 'gpt-4o') return 'OpenAI';
+  if (id.startsWith('gpt-') || id.startsWith('gpt4')) return 'OpenAI';
   if (id.startsWith('claude-')) return 'Anthropic';
   if (id.startsWith('deepseek-')) return 'DeepSeek';
   if (id.startsWith('doubao-') || name.includes('豆包')) return '豆包';

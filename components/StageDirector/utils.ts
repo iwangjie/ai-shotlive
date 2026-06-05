@@ -237,17 +237,17 @@ export const buildKeyframePromptWithAI = async (
 export const buildVideoPrompt = (
   actionSummary: string,
   cameraMovement: string,
-  videoModel: 'sora-2' | 'veo' | 'veo_3_1-fast' | 'veo_3_1-fast-4K' | 'veo_3_1_t2v_fast_landscape' | 'veo_3_1_t2v_fast_portrait' | 'veo_3_1_i2v_s_fast_fl_landscape' | 'veo_3_1_i2v_s_fast_fl_portrait' | string,
+  videoModel: 'veo' | 'veo_3_1-fast' | 'veo_3_1-fast-4K' | 'veo_3_1_t2v_fast_landscape' | 'veo_3_1_t2v_fast_portrait' | 'veo_3_1_i2v_s_fast_fl_landscape' | 'veo_3_1_i2v_s_fast_fl_portrait' | string,
   language: string,
   nineGrid?: NineGridData,
   videoDuration?: number
 ): string => {
   const isChinese = language === '中文' || language === 'Chinese';
   
-  const isAsyncVideoModel = videoModel === 'sora-2' || videoModel.toLowerCase().startsWith('veo_3_1-fast');
+  const isAsyncVideoModel = videoModel.toLowerCase().startsWith('veo_3_1-fast');
 
   // 九宫格分镜模式：有九宫格数据时，使用异步模型专用精简提示词
-  // 保留9个面板的景别/角度顺序，但 description 截断到60字符以内，避免超过 Sora-2 的 8192 字符限制
+  // 保留9个面板的景别/角度顺序，但 description 截断到60字符以内，避免超过异步视频模型的上下文限制
   if (nineGrid && nineGrid.panels.length > 0 && isAsyncVideoModel) {
     const DESC_MAX_LEN = 60;
     const panelDescriptions = nineGrid.panels.map((p, idx) => {
@@ -260,7 +260,7 @@ export const buildVideoPrompt = (
     const totalDuration = videoDuration || 8;
     const secondsPerPanel = Math.max(0.5, Math.round((totalDuration / 9) * 10) / 10);
     
-    const templateGroup = VIDEO_PROMPT_TEMPLATES.sora2NineGrid;
+    const templateGroup = VIDEO_PROMPT_TEMPLATES.asyncVideoNineGrid;
     
     const template = isChinese ? templateGroup.chinese : templateGroup.english;
     
@@ -275,8 +275,8 @@ export const buildVideoPrompt = (
   // 普通模式
   if (isAsyncVideoModel) {
     const template = isChinese 
-      ? VIDEO_PROMPT_TEMPLATES.sora2.chinese 
-      : VIDEO_PROMPT_TEMPLATES.sora2.english;
+      ? VIDEO_PROMPT_TEMPLATES.asyncVideo.chinese 
+      : VIDEO_PROMPT_TEMPLATES.asyncVideo.english;
     
     return template
       .replace('{actionSummary}', actionSummary)

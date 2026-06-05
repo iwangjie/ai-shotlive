@@ -83,8 +83,9 @@ export const apiFetch = async (
     headers,
   });
 
-  // 处理认证过期
-  if (response.status === 401) {
+  // 处理已登录状态下的认证过期；登录/注册等未认证请求保留服务端错误文案。
+  const isAuthRequest = path.startsWith('/api/auth/login') || path.startsWith('/api/auth/register');
+  if (response.status === 401 && token && !isAuthRequest) {
     clearAuth();
     if (onAuthExpired) {
       onAuthExpired();

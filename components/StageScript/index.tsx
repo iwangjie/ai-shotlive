@@ -13,6 +13,7 @@ import NovelManager from './NovelManager';
 import EpisodeManager from './EpisodeManager';
 import * as PS from '../../services/projectPatchService';
 import { fetchVisualStyles, stylesToOptions, VisualStyle } from '../../services/visualStyleService';
+import { getActiveChatModel } from '../../services/modelRegistry';
 
 interface Props {
   project: ProjectState;
@@ -37,7 +38,8 @@ const StageScript: React.FC<Props> = ({ project, updateProject, onShowModelConfi
   const [localNovelSynopsis, setLocalNovelSynopsis] = useState(project.novelSynopsis || '');
   const [localDuration, setLocalDuration] = useState(project.targetDuration || DEFAULTS.duration);
   const [localLanguage, setLocalLanguage] = useState(project.language || DEFAULTS.language);
-  const [localModel, setLocalModel] = useState(project.shotGenerationModel || DEFAULTS.model);
+  const activeChatModel = getActiveChatModel();
+  const [localModel, setLocalModel] = useState(activeChatModel?.id || DEFAULTS.model);
   const [localVisualStyle, setLocalVisualStyle] = useState(project.visualStyle || DEFAULTS.visualStyle);
   const [customDurationInput, setCustomDurationInput] = useState('');
   const [customModelInput, setCustomModelInput] = useState('');
@@ -82,9 +84,9 @@ const StageScript: React.FC<Props> = ({ project, updateProject, onShowModelConfi
     setLocalNovelSynopsis(project.novelSynopsis || '');
     setLocalDuration(project.targetDuration || DEFAULTS.duration);
     setLocalLanguage(project.language || DEFAULTS.language);
-    setLocalModel(project.shotGenerationModel || DEFAULTS.model);
+    setLocalModel(activeChatModel?.id || DEFAULTS.model);
     setLocalVisualStyle(project.visualStyle || DEFAULTS.visualStyle);
-  }, [project.id]);
+  }, [project.id, activeChatModel?.id]);
 
   // 上报生成状态给父组件，用于导航锁定
   useEffect(() => {
@@ -195,7 +197,7 @@ const StageScript: React.FC<Props> = ({ project, updateProject, onShowModelConfi
 
   const handleAnalyze = async () => {
     const finalDuration = getFinalValue(localDuration, customDurationInput);
-    const finalModel = getFinalValue(localModel, customModelInput);
+    const finalModel = getActiveChatModel()?.id || getFinalValue(localModel, customModelInput);
     const finalVisualStyle = getFinalValue(localVisualStyle, customStyleInput);
 
     const validation = validateConfig({

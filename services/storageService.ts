@@ -389,7 +389,7 @@ export const createNewProjectState = (): ProjectState => {
     targetDuration: '60s',
     language: '中文',
     visualStyle: 'live-action',
-    shotGenerationModel: 'gpt-5.1',
+    shotGenerationModel: 'gpt-5.5',
     novelChapters: [],
     novelEpisodes: [],
     selectedEpisodeId: null,

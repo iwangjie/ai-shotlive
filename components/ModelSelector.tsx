@@ -3,7 +3,7 @@
  * 用于在各功能模块中选择要使用的模型
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Cpu, ChevronDown } from 'lucide-react';
 import { 
   ModelType, 
@@ -54,6 +54,12 @@ const ModelSelector: React.FC<ModelSelectorProps> = ({
 
   const models = getModels();
   const selectedModel = models.find(m => m.id === value);
+
+  useEffect(() => {
+    if (models.length > 0 && !selectedModel) {
+      onChange(models[0].id);
+    }
+  }, [models, selectedModel, onChange]);
 
   if (compact) {
     return (

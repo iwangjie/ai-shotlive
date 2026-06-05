@@ -104,6 +104,7 @@ interface ModelRegistryState {
     providerId: string;
     endpoint?: string;
     params?: any;
+    isEnabled?: boolean;
   }>;
   activeModels: { chat: string; image: string; video: string };
 }
@@ -516,10 +517,9 @@ const executeVideoTask = async (
     });
   }
 
-  // 通用异步模式 (Sora, Veo-fast, Kling, Vidu, Seedance via proxy)
+  // 通用异步模式 (Veo-fast, Kling, Vidu, Seedance via proxy)
   const isAsync =
     (model.params as any)?.mode === 'async' ||
-    actualModelName === 'sora-2' ||
     actualModelName.toLowerCase().startsWith('veo_3_1-fast') ||
     actualModelName.includes('seedance');
 
@@ -1208,15 +1208,15 @@ const resolveModelConfig = (
   provider: ModelRegistryState['providers'][0] | undefined;
 } => {
   // 查找模型
-  let model = registry.models.find(m => m.id === modelId && m.type === type);
+  let model = registry.models.find(m => m.id === modelId && m.type === type && m.isEnabled !== false);
   if (!model) {
     // 尝试按 apiModel 匹配
-    model = registry.models.find(m => m.apiModel === modelId && m.type === type);
+    model = registry.models.find(m => m.apiModel === modelId && m.type === type && m.isEnabled !== false);
   }
   if (!model) {
     // 使用激活模型
     const activeId = registry.activeModels[type];
-    model = registry.models.find(m => m.id === activeId);
+    model = registry.models.find(m => m.id === activeId && m.type === type && m.isEnabled !== false);
   }
   if (!model) {
     throw new Error(`未找到模型: ${modelId} (${type})`);

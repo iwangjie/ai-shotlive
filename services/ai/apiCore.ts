@@ -428,6 +428,7 @@ export const chatCompletionStream = async (
 export const verifyApiKey = async (key: string, baseUrl?: string): Promise<{ success: boolean; message: string }> => {
   try {
     const apiBase = baseUrl ? mapToProxyUrl(baseUrl.replace(/\/+$/, '')) : getApiBase('chat');
+    const testModel = getActiveChatModel()?.apiModel || getActiveChatModel()?.id || 'gpt-5.5';
     const response = await fetch(`${apiBase}/v1/chat/completions`, {
       method: 'POST',
       headers: {
@@ -435,7 +436,7 @@ export const verifyApiKey = async (key: string, baseUrl?: string): Promise<{ suc
         'Authorization': `Bearer ${key}`
       },
       body: JSON.stringify({
-        model: 'gpt-41',
+        model: testModel,
         messages: [{ role: 'user', content: '仅返回1' }],
         temperature: 0.1,
         max_tokens: 5

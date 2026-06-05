@@ -149,7 +149,7 @@ const ModelCard: React.FC<ModelCardProps> = ({
         </div>
       )}
       <div className="text-[10px] text-[var(--text-muted)]">
-        模式：{editParams.mode === 'sync' ? '同步（Veo）' : '异步（Sora）'}
+        模式：{editParams.mode === 'sync' ? '同步（Veo）' : '异步'}
       </div>
     </div>
   );

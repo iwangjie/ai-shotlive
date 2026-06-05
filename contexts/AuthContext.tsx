@@ -76,10 +76,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const handleLogout = useCallback(() => {
-    // 退出前先把当前偏好同步到服务器
-    syncPreferencesToServer();
-
+  const clearUserState = useCallback(() => {
     clearAuth();
     // 清除用户级别的 localStorage 缓存
     localStorage.removeItem('aishotlive_model_registry');
@@ -87,10 +84,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(null);
   }, []);
 
+  const handleLogout = useCallback(() => {
+    // 退出前先把当前偏好同步到服务器
+    syncPreferencesToServer();
+    clearUserState();
+  }, [clearUserState]);
+
+  const handleAuthExpired = useCallback(() => {
+    clearUserState();
+  }, [clearUserState]);
+
   // 设置认证过期回调
   useEffect(() => {
-    setAuthExpiredCallback(handleLogout);
-  }, [handleLogout]);
+    setAuthExpiredCallback(handleAuthExpired);
+  }, [handleAuthExpired]);
 
   // 启动时验证已存在的 token
   useEffect(() => {

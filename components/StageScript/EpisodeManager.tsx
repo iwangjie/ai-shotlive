@@ -47,7 +47,7 @@ const EpisodeManager: React.FC<Props> = ({ project, updateProject, onSelectEpiso
   const [chapterContentCache, setChapterContentCache] = useState<Map<string, NovelChapter>>(new Map());
 
   const activeChatModel = getActiveChatModel();
-  const model = activeChatModel?.id || project.shotGenerationModel || 'gpt-5.1';
+  const model = activeChatModel?.id || project.shotGenerationModel || 'gpt-5.5';
   const language = project.language || '中文';
 
   const totalChapterPages = Math.max(1, Math.ceil(totalChapters / PAGE_SIZE));

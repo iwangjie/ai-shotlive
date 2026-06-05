@@ -42,7 +42,7 @@ const VideoGenerator: React.FC<VideoGeneratorProps> = ({
   
   // 状态（废弃模型已在数据加载层迁移，此处无需额外处理）
   const [selectedModelId, setSelectedModelId] = useState<string>(
-    normalizeModelId(shot.videoModel) || defaultModel?.id || videoModels[0]?.id || 'sora-2'
+    normalizeModelId(shot.videoModel) || defaultModel?.id || videoModels[0]?.id || 'veo_3_1-fast'
   );
   const [veoFastQuality, setVeoFastQuality] = useState<'standard' | '4k'>(
     resolveVeoFastQuality(shot.videoModel)

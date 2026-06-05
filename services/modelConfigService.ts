@@ -30,7 +30,7 @@ const DEFAULT_PROVIDER: ModelProvider = {
 const DEFAULT_CONFIG: ModelConfig = {
   chatModel: {
     providerId: 'antsk',
-    modelName: 'gpt-5.1',
+    modelName: 'gpt-5.5',
     endpoint: '/v1/chat/completions'
   },
   imageModel: {
@@ -40,9 +40,9 @@ const DEFAULT_CONFIG: ModelConfig = {
   },
   videoModel: {
     providerId: 'antsk',
-    type: 'veo',
-    modelName: 'veo',
-    endpoint: '/v1/chat/completions'
+    type: 'sora',
+    modelName: 'veo_3_1-fast',
+    endpoint: '/v1/videos'
   }
 };
 
@@ -386,9 +386,11 @@ export const resetToDefault = (): void => {
  * 预定义的对话模型列表
  */
 export const AVAILABLE_CHAT_MODELS = [
-  { name: 'GPT-5.1', value: 'gpt-5.1', description: '最新版本，推荐使用' },
-  { name: 'GPT-4.1', value: 'gpt-41', description: '稳定版本' },
-  { name: 'GPT-5.2', value: 'gpt-5.2', description: '实验版本' },
+  { name: 'GPT-5.5', value: 'gpt-5.5', description: '当前推荐旗舰模型' },
+  { name: 'GPT-5.2', value: 'gpt-5.2', description: '上一代前沿模型' },
+  { name: 'Claude Opus 4.8', value: 'claude-opus-4-8', description: 'Anthropic 高能力模型' },
+  { name: 'Qwen3.7 Max', value: 'qwen3.7-max', description: '通义千问旗舰模型' },
+  { name: 'DeepSeek V4 Pro', value: 'deepseek-v4-pro', description: 'DeepSeek 高能力模型' },
 ];
 
 /**
@@ -404,5 +406,7 @@ export const AVAILABLE_IMAGE_MODELS = [
 export const AVAILABLE_VIDEO_MODELS = [
   { name: 'Veo 3.1（自动）', value: 'veo', type: 'veo' as const, description: '生成时自动按横竖屏与是否带图选择模型' },
   { name: 'Veo 3.1 Fast', value: 'veo_3_1-fast', type: 'sora' as const, description: '异步模式，支持横/竖屏，固定 8 秒' },
-  { name: 'Sora-2', value: 'sora-2', type: 'sora' as const, description: '异步模式，支持 4/8/12 秒' },
+  { name: '豆包 Seedance 2.0', value: 'doubao-seedance-2-0', type: 'sora' as const, description: '火山引擎最新视频模型' },
+  { name: '可灵 VIDEO 3.0 Omni', value: 'kling-video-3-0-omni', type: 'sora' as const, description: '可灵最新视频模型' },
+  { name: '万象 2.7 图生视频', value: 'wan2.7-i2v', type: 'sora' as const, description: 'DashScope 原生异步视频模型' },
 ];

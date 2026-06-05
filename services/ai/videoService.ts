@@ -26,7 +26,7 @@ import { generateSeedanceVideo } from '../adapters/volcengineVideoAdapter';
 // ============================================
 
 /**
- * 异步视频生成（单图走 sora-2，双图走 veo_3_1-fast）
+ * 异步视频生成（默认走 veo_3_1-fast）
  * 流程：1. 创建任务 -> 2. 轮询状态 -> 3. 下载视频
  */
 const generateVideoAsync = async (
@@ -36,15 +36,11 @@ const generateVideoAsync = async (
   apiKey: string,
   aspectRatio: AspectRatio = '16:9',
   duration: VideoDuration = 8,
-  modelName: string = 'sora-2'
+  modelName: string = 'veo_3_1-fast'
 ): Promise<string> => {
   const references = [startImageBase64, endImageBase64].filter(Boolean) as string[];
-  const resolvedModelName = modelName || 'sora-2';
+  const resolvedModelName = modelName || 'veo_3_1-fast';
   const useReferenceArray = resolvedModelName.toLowerCase().startsWith('veo_3_1-fast');
-
-  if (resolvedModelName === 'sora-2' && references.length >= 2) {
-    throw new Error('Sora-2 不支持首尾帧模式，请只传一张参考图。');
-  }
 
   console.log(`🎬 使用异步模式生成视频 (${resolvedModelName}, ${aspectRatio}, ${duration}秒)...`);
 
@@ -392,7 +388,6 @@ export const generateVideo = async (
   // ========================================
   const isAsyncMode =
     (resolvedVideoModel?.params as any)?.mode === 'async' ||
-    requestModel === 'sora-2' ||
     requestModel.toLowerCase().startsWith('veo_3_1-fast');
 
   // 异步模式
@@ -404,7 +399,7 @@ export const generateVideo = async (
       apiKey,
       aspectRatio,
       duration,
-      requestModel || 'sora-2'
+      requestModel || 'veo_3_1-fast'
     );
   }
 

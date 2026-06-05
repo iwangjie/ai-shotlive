@@ -72,7 +72,7 @@ const NovelManager: React.FC<Props> = ({
   const [aiModalCustomGenre, setAiModalCustomGenre] = useState('');
 
   const activeChatModel = getActiveChatModel();
-  const model = activeChatModel?.id || project.shotGenerationModel || 'gpt-5.1';
+  const model = activeChatModel?.id || project.shotGenerationModel || 'gpt-5.5';
   const totalPages = Math.max(1, Math.ceil(totalChapters / PAGE_SIZE));
 
   // 从服务端分页加载章节（合并本地新建但尚未同步到服务端的章节）

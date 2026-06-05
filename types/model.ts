@@ -62,7 +62,7 @@ export interface ImageModelParams {
  * 视频模型参数
  */
 export interface VideoModelParams {
-  mode: VideoMode;                        // sync=Veo, async=Sora
+  mode: VideoMode;                        // sync=Veo, async=异步视频
   defaultAspectRatio: AspectRatio;
   supportedAspectRatios: AspectRatio[];
   defaultDuration: VideoDuration;
@@ -82,7 +82,7 @@ export type ModelParams = ChatModelParams | ImageModelParams | VideoModelParams;
  * 模型定义基础接口
  */
 export interface ModelDefinitionBase {
-  id: string;                    // 唯一标识，如 'gpt-5.1'
+  id: string;                    // 唯一标识，如 'gpt-5.5'
   apiModel?: string;             // API 实际模型名（可与其他模型重复）
   name: string;                  // 显示名称，如 'GPT-5.1'
   type: ModelType;               // 模型类型
@@ -247,9 +247,9 @@ export const DEFAULT_VIDEO_PARAMS_VEO: VideoModelParams = {
 };
 
 /**
- * 默认视频模型参数 (Sora)
+ * 默认视频模型参数 (异步视频)
  */
-export const DEFAULT_VIDEO_PARAMS_SORA: VideoModelParams = {
+export const DEFAULT_VIDEO_PARAMS_ASYNC: VideoModelParams = {
   mode: 'async',
   defaultAspectRatio: '16:9',
   supportedAspectRatios: ['16:9', '9:16', '1:1'],
@@ -279,11 +279,11 @@ export const DEFAULT_VIDEO_PARAMS_VEO_FAST: VideoModelParams = {
 export const BUILTIN_CHAT_MODELS: ChatModelDefinition[] = [
   // ========== OpenAI ==========
   {
-    id: 'gpt-5.1',
-    name: 'GPT-5.1',
+    id: 'gpt-5.5',
+    name: 'GPT-5.5',
     type: 'chat',
     providerId: 'openai',
-    description: '剧情脚本切分首选：结构化输出稳定，适合分场/分镜、提取人物与事件',
+    description: 'OpenAI 当前推荐的旗舰模型，适合复杂分镜、长文本剧本解析和专业创作',
     isBuiltIn: true,
     isEnabled: true,
     params: { ...DEFAULT_CHAT_PARAMS },
@@ -293,27 +293,7 @@ export const BUILTIN_CHAT_MODELS: ChatModelDefinition[] = [
     name: 'GPT-5.2',
     type: 'chat',
     providerId: 'openai',
-    description: '创意增强型切分：更适合提供多种切分方案、改写节奏与镜头建议（一致性略弱）',
-    isBuiltIn: true,
-    isEnabled: true,
-    params: { ...DEFAULT_CHAT_PARAMS },
-  },
-  {
-    id: 'gpt-41',
-    name: 'GPT-4.1',
-    type: 'chat',
-    providerId: 'openai',
-    description: '严谨切分：对复杂叙事与长文本更稳，适合时间线梳理、因果关系与要点校对',
-    isBuiltIn: true,
-    isEnabled: true,
-    params: { ...DEFAULT_CHAT_PARAMS },
-  },
-  {
-    id: 'gpt-4o',
-    name: 'GPT-4o',
-    type: 'chat',
-    providerId: 'openai',
-    description: 'OpenAI GPT-4o 多模态模型，支持图文理解',
+    description: 'OpenAI 上一代前沿模型，适合专业文本生成和推理任务',
     isBuiltIn: true,
     isEnabled: true,
     params: { ...DEFAULT_CHAT_PARAMS },
@@ -322,44 +302,44 @@ export const BUILTIN_CHAT_MODELS: ChatModelDefinition[] = [
   // 注意：Anthropic 官方 API 使用 /v1/messages 格式，与 OpenAI 格式不同。
   // 如直接使用 Anthropic 官方 Key，需通过兼容代理或使用 AiShotlive API。
   {
-    id: 'claude-sonnet-4-5-20250929',
-    name: 'Claude Sonnet 4.5',
+    id: 'claude-opus-4-8',
+    name: 'Claude Opus 4.8',
     type: 'chat',
     providerId: 'anthropic',
     endpoint: '/v1/messages',
-    description: '长文友好：适合长篇剧本的分段、摘要与角色弧线整理，文字表达更细腻',
+    description: 'Anthropic 当前最强通用模型，适合高难度长文本和复杂创作任务',
     isBuiltIn: true,
     isEnabled: true,
     params: { ...DEFAULT_CHAT_PARAMS },
   },
   {
-    id: 'claude-opus-4-5',
-    name: 'Claude Opus 4.5',
+    id: 'claude-sonnet-4-6',
+    name: 'Claude Sonnet 4.6',
     type: 'chat',
     providerId: 'anthropic',
     endpoint: '/v1/messages',
-    description: 'Anthropic 最强模型，深度推理与创意写作能力突出',
+    description: 'Anthropic 主力均衡模型，适合日常剧本分析、改写和结构化输出',
     isBuiltIn: true,
     isEnabled: true,
     params: { ...DEFAULT_CHAT_PARAMS },
   },
   // ========== DeepSeek ==========
   {
-    id: 'deepseek-chat',
-    name: 'DeepSeek Chat',
+    id: 'deepseek-v4-pro',
+    name: 'DeepSeek V4 Pro',
     type: 'chat',
     providerId: 'deepseek',
-    description: 'DeepSeek 对话模型，性价比高，适合长文本处理',
+    description: 'DeepSeek V4 高能力模型，支持思考模式，适合复杂推理和长文本任务',
     isBuiltIn: true,
     isEnabled: true,
     params: { ...DEFAULT_CHAT_PARAMS },
   },
   {
-    id: 'deepseek-reasoner',
-    name: 'DeepSeek Reasoner',
+    id: 'deepseek-v4-flash',
+    name: 'DeepSeek V4 Flash',
     type: 'chat',
     providerId: 'deepseek',
-    description: 'DeepSeek 推理模型，适合复杂逻辑分析',
+    description: 'DeepSeek V4 高性价比模型，适合快速剧本解析和批量文本任务',
     isBuiltIn: true,
     isEnabled: true,
     params: { ...DEFAULT_CHAT_PARAMS },
@@ -376,82 +356,71 @@ export const BUILTIN_CHAT_MODELS: ChatModelDefinition[] = [
     isEnabled: true,
     params: { ...DEFAULT_CHAT_PARAMS },
   },
-  {
-    id: 'doubao-seed-1-6-251015',
-    name: '豆包 Seed 1.6',
-    type: 'chat',
-    providerId: 'doubao',
-    endpoint: '/api/v3/chat/completions',
-    description: '字节跳动豆包大模型，多模态能力强',
-    isBuiltIn: true,
-    isEnabled: true,
-    params: { ...DEFAULT_CHAT_PARAMS },
-  },
   // ========== 千问 (Qwen) ==========
   {
-    id: 'qwen-plus-latest',
-    name: '通义千问 Plus',
+    id: 'qwen3.7-max',
+    name: '通义千问 Qwen3.7 Max',
     type: 'chat',
     providerId: 'qwen',
     endpoint: '/compatible-mode/v1/chat/completions',
-    description: '阿里千问 Plus，均衡的性能与成本',
+    description: '阿里百炼当前最强千问模型，百万 token 上下文，适合复杂推理和智能体任务',
     isBuiltIn: true,
     isEnabled: true,
     params: { ...DEFAULT_CHAT_PARAMS },
   },
   {
-    id: 'qwen-max',
-    name: '通义千问 Max',
+    id: 'qwen3.7-plus',
+    name: '通义千问 Qwen3.7 Plus',
     type: 'chat',
     providerId: 'qwen',
     endpoint: '/compatible-mode/v1/chat/completions',
-    description: '阿里千问旗舰版，最强推理与创作',
+    description: '阿里百炼主力均衡模型，适合成本和质量兼顾的剧本生成',
     isBuiltIn: true,
     isEnabled: true,
     params: { ...DEFAULT_CHAT_PARAMS },
   },
   // ========== 智谱 (Zhipu/GLM) ==========
   {
-    id: 'glm-4.7',
-    name: '智谱 GLM-4.7',
+    id: 'glm-5.1',
+    name: '智谱 GLM-5.1',
     type: 'chat',
     providerId: 'zhipu',
     endpoint: '/api/paas/v4/chat/completions',
-    description: '智谱 AI 最新模型，中文理解能力出色',
+    description: '智谱最新旗舰模型，适合复杂推理、代码和长程任务',
     isBuiltIn: true,
     isEnabled: true,
     params: { ...DEFAULT_CHAT_PARAMS },
   },
   {
-    id: 'glm-4.5-flash',
-    name: '智谱 GLM-4.5 Flash',
+    id: 'glm-5.1-highspeed',
+    name: '智谱 GLM-5.1 HighSpeed',
     type: 'chat',
     providerId: 'zhipu',
     endpoint: '/api/paas/v4/chat/completions',
-    description: '智谱 AI 快速模型，支持深度思考',
+    description: 'GLM-5.1 高速版本，适合低延迟文本生成',
     isBuiltIn: true,
     isEnabled: true,
     params: { ...DEFAULT_CHAT_PARAMS },
   },
   // ========== Google Gemini ==========
   {
-    id: 'gemini-2.5-pro',
-    name: 'Gemini 2.5 Pro',
+    id: 'gemini-3.1-pro-preview',
+    name: 'Gemini 3.1 Pro Preview',
     type: 'chat',
     providerId: 'google',
     endpoint: '/v1beta/openai/chat/completions',
-    description: 'Google 旗舰模型，多模态+深度思考',
+    description: 'Google Gemini 3.1 Pro 预览版，适合复杂推理和长上下文任务',
     isBuiltIn: true,
     isEnabled: true,
     params: { ...DEFAULT_CHAT_PARAMS },
   },
   {
-    id: 'gemini-2.5-flash',
-    name: 'Gemini 2.5 Flash',
+    id: 'gemini-3.5-flash',
+    name: 'Gemini 3.5 Flash',
     type: 'chat',
     providerId: 'google',
     endpoint: '/v1beta/openai/chat/completions',
-    description: 'Google 快速模型，高性价比',
+    description: 'Google 高速前沿模型，适合低延迟和批量任务',
     isBuiltIn: true,
     isEnabled: true,
     params: { ...DEFAULT_CHAT_PARAMS },
@@ -467,6 +436,17 @@ export const BUILTIN_CHAT_MODELS: ChatModelDefinition[] = [
     isEnabled: true,
     params: { ...DEFAULT_CHAT_PARAMS },
   },
+  // ========== Moonshot/Kimi ==========
+  {
+    id: 'kimi-k2.6',
+    name: 'Kimi K2.6',
+    type: 'chat',
+    providerId: 'moonshot',
+    description: '月之暗面 Kimi K2.6，适合长上下文、代码和工具调用任务',
+    isBuiltIn: true,
+    isEnabled: true,
+    params: { ...DEFAULT_CHAT_PARAMS },
+  },
 ];
 
 /**
@@ -474,6 +454,17 @@ export const BUILTIN_CHAT_MODELS: ChatModelDefinition[] = [
  * 包含原有模型 + 从 Toonflow 移植的多厂商图片模型
  */
 export const BUILTIN_IMAGE_MODELS: ImageModelDefinition[] = [
+  {
+    id: 'gpt-image-2',
+    name: 'GPT Image 2',
+    type: 'image',
+    providerId: 'openai',
+    endpoint: '/v1/images/generations',
+    description: 'OpenAI 最新图片生成模型，适合高质量关键帧和分镜图生成',
+    isBuiltIn: true,
+    isEnabled: true,
+    params: { ...DEFAULT_IMAGE_PARAMS, supportedAspectRatios: ['16:9', '9:16', '1:1'] as AspectRatio[], apiFormat: 'openai-image' as ImageApiFormat },
+  },
   {
     id: 'gemini-3-pro-image-preview',
     name: 'Gemini 3 Pro Image(Nano Banana Pro)',
@@ -582,37 +573,7 @@ export const BUILTIN_VIDEO_MODELS: VideoModelDefinition[] = [
     isEnabled: true,
     params: { ...DEFAULT_VIDEO_PARAMS_VEO_FAST },
   },
-  // ========== OpenAI Sora ==========
-  {
-    id: 'sora-2',
-    name: 'Sora-2',
-    type: 'video',
-    providerId: 'openai',
-    endpoint: '/v1/videos',
-    description: 'OpenAI Sora 视频生成，异步模式，支持多种时长',
-    isBuiltIn: true,
-    isEnabled: true,
-    params: { ...DEFAULT_VIDEO_PARAMS_SORA },
-  },
   // ========== 豆包 Seedance（火山引擎）==========
-  {
-    id: 'doubao-seedance-1-5-pro',
-    apiModel: 'doubao-seedance-1-5-pro-251215',
-    name: '豆包 Seedance 1.5 Pro',
-    type: 'video',
-    providerId: 'doubao',
-    endpoint: '/v1/videos',
-    description: '字节火山引擎视频生成，支持有声视频，4-12秒',
-    isBuiltIn: true,
-    isEnabled: true,
-    params: {
-      mode: 'async' as VideoMode,
-      defaultAspectRatio: '16:9' as AspectRatio,
-      supportedAspectRatios: ['16:9', '9:16', '1:1'] as AspectRatio[],
-      defaultDuration: 8 as VideoDuration,
-      supportedDurations: [4, 8, 12] as VideoDuration[],
-    },
-  },
   {
     id: 'doubao-seedance-2-0',
     apiModel: 'doubao-seedance-2-0-260214',
@@ -633,12 +594,31 @@ export const BUILTIN_VIDEO_MODELS: VideoModelDefinition[] = [
   },
   // ========== 可灵 (Kling) ==========
   {
-    id: 'kling-v2-6-pro',
-    name: '可灵 V2.6 Pro',
+    id: 'kling-video-3-0-omni',
+    apiModel: 'kling-video-3-0-omni',
+    name: '可灵 VIDEO 3.0 Omni',
     type: 'video',
     providerId: 'antsk',
     endpoint: '/v1/videos',
-    description: '可灵 AI 最新视频模型（通过 AiShotlive API）',
+    description: '可灵 VIDEO 3.0 Omni 最新视频模型（通过 AiShotlive API）',
+    isBuiltIn: true,
+    isEnabled: true,
+    params: {
+      mode: 'async' as VideoMode,
+      defaultAspectRatio: '16:9' as AspectRatio,
+      supportedAspectRatios: ['16:9', '9:16', '1:1'] as AspectRatio[],
+      defaultDuration: 8 as VideoDuration,
+      supportedDurations: [4, 8] as VideoDuration[],
+    },
+  },
+  {
+    id: 'kling-video-3-0',
+    apiModel: 'kling-video-3-0',
+    name: '可灵 VIDEO 3.0',
+    type: 'video',
+    providerId: 'antsk',
+    endpoint: '/v1/videos',
+    description: '可灵 VIDEO 3.0 视频模型（通过 AiShotlive API）',
     isBuiltIn: true,
     isEnabled: true,
     params: {
@@ -671,11 +651,11 @@ export const BUILTIN_VIDEO_MODELS: VideoModelDefinition[] = [
   // 使用 DashScope 原生适配器（通过本地代理解决 CORS）
   // img_url 支持直接传入 URL，无需 base64 转换
   {
-    id: 'wan2.6-t2v',
-    name: '万象 2.6 文生视频',
+    id: 'wan2.7-t2v',
+    name: '万象 2.7 文生视频',
     type: 'video',
     providerId: 'qwen',
-    description: '阿里万象视频生成，支持有声视频（DashScope 原生 API）',
+    description: '阿里万象 2.7 文生视频（DashScope 原生 API）',
     isBuiltIn: true,
     isEnabled: true,
     params: {
@@ -687,11 +667,11 @@ export const BUILTIN_VIDEO_MODELS: VideoModelDefinition[] = [
     },
   },
   {
-    id: 'wan2.6-i2v-flash',
-    name: '万象 2.6 首帧 Flash',
+    id: 'wan2.7-i2v',
+    name: '万象 2.7 图生视频',
     type: 'video',
     providerId: 'qwen',
-    description: '阿里万象首帧图生视频闪电版（DashScope 原生 API）',
+    description: '阿里万象 2.7 图生视频，支持首帧/首尾帧/视频续写（DashScope 原生 API）',
     isBuiltIn: true,
     isEnabled: true,
     params: {
@@ -699,55 +679,23 @@ export const BUILTIN_VIDEO_MODELS: VideoModelDefinition[] = [
       defaultAspectRatio: '16:9' as AspectRatio,
       supportedAspectRatios: ['16:9', '9:16', '1:1'] as AspectRatio[],
       defaultDuration: 4 as VideoDuration,
-      supportedDurations: [4, 8] as VideoDuration[],
+      supportedDurations: [4, 8, 12] as VideoDuration[],
     },
   },
   {
-    id: 'wan2.6-i2v',
-    name: '万象 2.6 首帧',
+    id: 'wan2.7-v2v',
+    name: '万象 2.7 参考生视频',
     type: 'video',
     providerId: 'qwen',
-    description: '阿里万象首帧图生视频标准版（DashScope 原生 API）',
+    description: '阿里万象 2.7 参考生视频，支持多模态参考输入（DashScope 原生 API）',
     isBuiltIn: true,
     isEnabled: true,
     params: {
       mode: 'async' as VideoMode,
       defaultAspectRatio: '16:9' as AspectRatio,
       supportedAspectRatios: ['16:9', '9:16', '1:1'] as AspectRatio[],
-      defaultDuration: 4 as VideoDuration,
-      supportedDurations: [4, 8] as VideoDuration[],
-    },
-  },
-  {
-    id: 'wan2.2-kf2v-flash',
-    name: '万象 2.2 首尾帧 Flash',
-    type: 'video',
-    providerId: 'qwen',
-    description: '阿里万象首尾帧关键帧生视频闪电版（DashScope 原生 API）',
-    isBuiltIn: true,
-    isEnabled: true,
-    params: {
-      mode: 'async' as VideoMode,
-      defaultAspectRatio: '16:9' as AspectRatio,
-      supportedAspectRatios: ['16:9', '9:16', '1:1'] as AspectRatio[],
-      defaultDuration: 4 as VideoDuration,
-      supportedDurations: [4, 8] as VideoDuration[],
-    },
-  },
-  {
-    id: 'wanx2.1-kf2v-plus',
-    name: '万象 2.1 首尾帧 Plus',
-    type: 'video',
-    providerId: 'qwen',
-    description: '阿里万象首尾帧关键帧生视频增强版（DashScope 原生 API）',
-    isBuiltIn: true,
-    isEnabled: true,
-    params: {
-      mode: 'async' as VideoMode,
-      defaultAspectRatio: '16:9' as AspectRatio,
-      supportedAspectRatios: ['16:9', '9:16', '1:1'] as AspectRatio[],
-      defaultDuration: 4 as VideoDuration,
-      supportedDurations: [4, 8] as VideoDuration[],
+      defaultDuration: 8 as VideoDuration,
+      supportedDurations: [4, 8, 12] as VideoDuration[],
     },
   },
 ];
@@ -867,8 +815,8 @@ export const ALL_BUILTIN_MODELS: ModelDefinition[] = [
  * 默认激活模型
  */
 export const DEFAULT_ACTIVE_MODELS: ActiveModels = {
-  chat: 'gpt-5.1',
+  chat: 'gpt-5.5',
   image: 'gemini-3-pro-image-preview',
-  video: 'sora-2',
+  video: 'veo_3_1-fast',
   audio: '',  // 音频模型需用户配置
 };

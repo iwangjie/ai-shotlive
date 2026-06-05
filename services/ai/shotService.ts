@@ -704,7 +704,7 @@ export const generateNineGridPanels = async (
   const startTime = Date.now();
   console.log('🎬 九宫格分镜 - 开始AI拆分视角...');
 
-  const resolvedModel = model || getActiveChatModel()?.id || 'gpt-5.1';
+  const resolvedModel = model || getActiveChatModel()?.id || 'gpt-5.5';
 
   const systemPrompt = `你是一位专业的电影分镜师和摄影指导。你的任务是将一个镜头动作拆解为9个不同的摄影视角，用于九宫格分镜预览。
 每个视角必须展示相同场景的不同景别和机位角度组合，确保覆盖从远景到特写、从俯拍到仰拍的多样化视角。`;

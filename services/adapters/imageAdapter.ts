@@ -59,6 +59,24 @@ const sanitizeBearerToken = (apiKey: string): string => {
   return 'Bearer ' + apiKey.replace(/Bearer\s+/gi, '').trim();
 };
 
+const isGptImageModel = (modelId: string): boolean => modelId.startsWith('gpt-image-');
+
+const mapAspectRatioToOpenAIImageSize = (aspectRatio: AspectRatio): string => {
+  switch (aspectRatio) {
+    case '16:9': return '1536x1024';
+    case '9:16': return '1024x1536';
+    case '1:1': return '1024x1024';
+    default: return 'auto';
+  }
+};
+
+const dataUrlToBlob = (dataUrl: string): Blob => {
+  const [meta, base64] = dataUrl.split(',');
+  const mime = meta.match(/data:(.*?);base64/)?.[1] || 'image/png';
+  const bytes = Uint8Array.from(atob(base64), c => c.charCodeAt(0));
+  return new Blob([bytes], { type: mime });
+};
+
 /**
  * 通用 HTTP 错误处理
  */
@@ -93,19 +111,52 @@ const callOpenAIImageApi = async (
 ): Promise<string> => {
   const apiModel = activeModel.apiModel || activeModel.id;
   const endpoint = activeModel.endpoint || '/api/v3/images/generations';
+  const aspectRatio = options.aspectRatio || activeModel.params.defaultAspectRatio;
+  const isOpenAIGptImage = isGptImageModel(apiModel);
+  const referenceImages = ensureDataUrlArray(options.referenceImages || []);
+
+  if (isOpenAIGptImage && referenceImages.length > 0) {
+    const formData = new FormData();
+    formData.append('model', apiModel);
+    formData.append('prompt', options.prompt);
+    formData.append('size', mapAspectRatioToOpenAIImageSize(aspectRatio));
+    referenceImages.forEach((img, index) => {
+      formData.append('image[]', dataUrlToBlob(img), `reference-${index}.png`);
+    });
+
+    const editEndpoint = endpoint.replace('/generations', '/edits');
+    const response = await retryOperation(async () => {
+      const res = await fetch(`${apiBase}${editEndpoint}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': sanitizeBearerToken(apiKey),
+        },
+        body: formData,
+      });
+      if (!res.ok) await handleHttpError(res);
+      return await res.json();
+    });
+
+    const b64 = response?.data?.[0]?.b64_json;
+    if (b64) return `data:image/png;base64,${b64}`;
+    throw new Error('图片生成失败：未能从响应中提取图片数据');
+  }
 
   const requestBody: Record<string, any> = {
     model: apiModel,
     prompt: options.prompt,
-    size: '2K',
-    response_format: 'url',
-    sequential_image_generation: 'disabled',
-    stream: false,
-    watermark: false,
+    size: isOpenAIGptImage ? mapAspectRatioToOpenAIImageSize(aspectRatio) : '2K',
   };
 
-  if (options.referenceImages && options.referenceImages.length > 0) {
-    requestBody.image = ensureDataUrlArray(options.referenceImages);
+  if (!isOpenAIGptImage) {
+    requestBody.response_format = 'url';
+    requestBody.sequential_image_generation = 'disabled';
+    requestBody.stream = false;
+    requestBody.watermark = false;
+  }
+
+  if (!isOpenAIGptImage && referenceImages.length > 0) {
+    requestBody.image = referenceImages;
   }
 
   const response = await retryOperation(async () => {

@@ -62,7 +62,30 @@ export const loadRegistry = (): ModelRegistryState => {
         'veo_3_1_t2v_fast_portrait',
         'veo_3_1_i2v_s_fast_fl_landscape',
         'veo_3_1_i2v_s_fast_fl_portrait',
+        'sora-2',
+        'doubao-seedance-1-5-pro',
+        'kling-v2-6-pro',
+        'wan2.6-t2v',
+        'wan2.6-i2v-flash',
+        'wan2.6-i2v',
+        'wan2.2-kf2v-flash',
+        'wanx2.1-kf2v-plus',
       ];
+      const deprecatedChatModelIds = new Set([
+        'gpt-5.1',
+        'gpt-41',
+        'gpt-4o',
+        'claude-sonnet-4-5-20250929',
+        'claude-opus-4-5',
+        'deepseek-chat',
+        'deepseek-reasoner',
+        'qwen-plus-latest',
+        'qwen-max',
+        'glm-4.7',
+        'glm-4.5-flash',
+        'gemini-2.5-pro',
+        'gemini-2.5-flash',
+      ]);
       
       // 确保内置模型和提供商始终存在
       const builtInProviderIds = BUILTIN_PROVIDERS.map(p => p.id);
@@ -150,21 +173,29 @@ export const loadRegistry = (): ModelRegistryState => {
         return { ...m, apiModel: m.id };
       });
 
-      // 清理旧的已废弃视频模型
+      // 清理旧的已废弃模型
       const modelCountBefore = parsed.models.length;
       parsed.models = parsed.models.filter(
-        m => !(m.type === 'video' && deprecatedVideoModelIds.includes(m.id))
+        m => !(
+          (m.type === 'video' && deprecatedVideoModelIds.includes(m.id)) ||
+          (m.type === 'chat' && deprecatedChatModelIds.has(m.id))
+        )
       );
       const modelsRemoved = modelCountBefore - parsed.models.length;
 
       // 迁移激活视频模型
       let activeModelMigrated = false;
+      let activeChatModelMigrated = false;
+      if (deprecatedChatModelIds.has(parsed.activeModels.chat)) {
+        parsed.activeModels.chat = 'gpt-5.5';
+        activeChatModelMigrated = true;
+      }
       if (
         deprecatedVideoModelIds.includes(parsed.activeModels.video) ||
         parsed.activeModels.video === 'veo_3_1' ||
         parsed.activeModels.video?.startsWith('veo_3_1_')
       ) {
-        parsed.activeModels.video = 'veo';
+        parsed.activeModels.video = 'veo_3_1-fast';
         activeModelMigrated = true;
       }
       
@@ -181,8 +212,11 @@ export const loadRegistry = (): ModelRegistryState => {
       // 每次加载后回写 localStorage，确保内置模型/提供商的更新（如 providerId 变更）被持久化
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
-        if (modelsRemoved > 0 || activeModelMigrated) {
+        if (modelsRemoved > 0 || activeModelMigrated || activeChatModelMigrated) {
           console.log(`🔄 模型注册中心迁移完成：清理 ${modelsRemoved} 个废弃模型`);
+        }
+        if (modelsRemoved > 0 || activeModelMigrated || activeChatModelMigrated) {
+          syncRegistryToServer(parsed).catch(() => {});
         }
       } catch (e) {
         // 回写失败不影响运行

@@ -13,7 +13,7 @@ import {
   VideoModelParams,
   DEFAULT_CHAT_PARAMS,
   DEFAULT_IMAGE_PARAMS,
-  DEFAULT_VIDEO_PARAMS_SORA,
+  DEFAULT_VIDEO_PARAMS_ASYNC,
   DEFAULT_VIDEO_PARAMS_VEO,
 } from '../../types/model';
 import { getProviders, addProvider } from '../../services/modelRegistry';
@@ -79,7 +79,7 @@ const AddModelForm: React.FC<AddModelFormProps> = ({ type, onSave, onCancel }) =
       params = { ...DEFAULT_IMAGE_PARAMS };
     } else {
       params = videoMode === 'async' 
-        ? { ...DEFAULT_VIDEO_PARAMS_SORA }
+        ? { ...DEFAULT_VIDEO_PARAMS_ASYNC }
         : { ...DEFAULT_VIDEO_PARAMS_VEO };
     }
 
@@ -252,7 +252,7 @@ const AddModelForm: React.FC<AddModelFormProps> = ({ type, onSave, onCancel }) =
                   : 'bg-[var(--bg-hover)] text-[var(--text-tertiary)] hover:bg-[var(--border-secondary)]'
               }`}
             >
-              异步模式（Sora 类）
+              异步模式
             </button>
           </div>
           <p className="text-[9px] text-[var(--text-muted)] mt-1">

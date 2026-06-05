@@ -259,7 +259,7 @@ const callVeoApi = async (
 };
 
 /**
- * 调用 Sora API（异步模式）
+ * 调用异步视频 API
  */
 const callSoraApi = async (
   options: VideoGenerateOptions,
@@ -271,13 +271,9 @@ const callSoraApi = async (
   const duration = options.duration || model.params.defaultDuration;
   const apiModel = model.apiModel || model.id;
   const references = [options.startImage, options.endImage].filter(Boolean) as string[];
-  const resolvedModel = apiModel || 'sora-2';
+  const resolvedModel = apiModel || 'veo_3_1-fast';
   const useReferenceArray = resolvedModel.toLowerCase().startsWith('veo_3_1-fast');
 
-  if (resolvedModel === 'sora-2' && references.length >= 2) {
-    throw new Error('Sora-2 不支持首尾帧模式，请只传一张参考图。');
-  }
-  
   const { width, height, size } = getSizeFromAspectRatio(aspectRatio);
 
   console.log(`🎬 使用异步模式生成视频 (${resolvedModel}, ${aspectRatio}, ${duration}秒)...`);
@@ -404,7 +400,7 @@ const callSoraApi = async (
     throw new Error('创建视频任务失败：未返回任务 ID');
   }
 
-  console.log('📋 Sora-2 任务已创建，任务 ID:', taskId);
+  console.log('📋 异步视频任务已创建，任务 ID:', taskId);
 
   // 轮询状态
   const maxPollingTime = 1200000; // 20 分钟
@@ -433,7 +429,7 @@ const callSoraApi = async (
     const statusData = await statusResponse.json();
     const status = statusData.status;
 
-    console.log('🔄 Sora-2 任务状态:', status, '进度:', statusData.progress);
+    console.log('🔄 异步视频任务状态:', status, '进度:', statusData.progress);
 
     if (status === 'completed' || status === 'succeeded') {
       videoUrlFromStatus = statusData.video_url || statusData.videoUrl || null;

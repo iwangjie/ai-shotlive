@@ -178,6 +178,7 @@ export const callChatApi = async (
 export const verifyApiKey = async (apiKey: string, baseUrl?: string): Promise<{ success: boolean; message: string }> => {
   try {
     const url = mapToProxyUrl((baseUrl || 'https://api.antsk.cn').replace(/\/+$/, ''));
+    const testModel = getActiveChatModel()?.apiModel || getActiveChatModel()?.id || 'gpt-5.5';
     
     const response = await fetch(`${url}/v1/chat/completions`, {
       method: 'POST',
@@ -186,7 +187,7 @@ export const verifyApiKey = async (apiKey: string, baseUrl?: string): Promise<{ 
         'Authorization': `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: 'gpt-41',
+        model: testModel,
         messages: [{ role: 'user', content: '仅返回1' }],
         temperature: 0.1,
         max_tokens: 5,
