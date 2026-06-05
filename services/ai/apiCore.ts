@@ -53,7 +53,7 @@ export class ApiKeyError extends Error {
 }
 
 /** 默认 API base URL（向后兼容） */
-const DEFAULT_API_BASE = 'https://api.antsk.cn';
+const DEFAULT_API_BASE = 'https://api.0-0.pro';
 
 /**
  * 解析模型：根据 type 和可选 modelId 找到对应的模型配置
@@ -167,7 +167,7 @@ export const retryOperation = async <T>(
         throw new Error(
           `无法连接到 API（浏览器跨域限制）。` +
           `该提供商的 API 不支持浏览器直接调用。` +
-          `请在模型配置中将该模型的提供商切换为支持浏览器调用的代理服务（如 AiShotlive API）。`
+          `请在模型配置中将该模型的提供商切换为支持浏览器调用的代理服务（如 0-0 一站式平台）。`
         );
       }
 
@@ -284,7 +284,7 @@ export const chatCompletion = async (
         throw new Error(
           `无法连接到 ${apiBase}（浏览器跨域限制）。` +
           `该提供商的 API 不支持浏览器直接调用。` +
-          `请在模型配置中将该模型的提供商切换为支持浏览器调用的代理服务（如 AiShotlive API）。`
+          `请在模型配置中将该模型的提供商切换为支持浏览器调用的代理服务（如 0-0 一站式平台）。`
         );
       }
       throw fetchError;
@@ -352,7 +352,7 @@ export const chatCompletionStream = async (
         throw new Error(
           `无法连接到 ${apiBase}（浏览器跨域限制）。` +
           `该提供商的 API 不支持浏览器直接调用。` +
-          `请在模型配置中将该模型的提供商切换为支持浏览器调用的代理服务（如 AiShotlive API）。`
+          `请在模型配置中将该模型的提供商切换为支持浏览器调用的代理服务（如 0-0 一站式平台）。`
         );
       }
       throw fetchError;

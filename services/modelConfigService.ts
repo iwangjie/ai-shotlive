@@ -17,11 +17,11 @@ import {
 // localStorage 键名
 const STORAGE_KEY = 'aishotlive_model_config';
 
-// 默认提供商 - api.antsk.cn
+// 默认提供商 - 0-0 一站式平台
 const DEFAULT_PROVIDER: ModelProvider = {
   id: 'antsk',
-  name: 'AiShotlive API (api.antsk.cn)',
-  baseUrl: 'https://api.antsk.cn',
+  name: '0-0 一站式平台 (api.0-0.pro)',
+  baseUrl: 'https://api.0-0.pro',
   isDefault: true,
   isBuiltIn: true
 };
@@ -35,8 +35,8 @@ const DEFAULT_CONFIG: ModelConfig = {
   },
   imageModel: {
     providerId: 'antsk',
-    modelName: 'gemini-3-pro-image-preview',
-    endpoint: '/v1beta/models/gemini-3-pro-image-preview:generateContent'
+    modelName: 'gpt-image-2',
+    endpoint: '/v1/images/generations'
   },
   videoModel: {
     providerId: 'antsk',
@@ -73,6 +73,12 @@ export const loadModelConfig = (): ModelManagerState => {
       const hasDefaultProvider = parsed.providers.some(p => p.id === 'antsk');
       if (!hasDefaultProvider) {
         parsed.providers.unshift(DEFAULT_PROVIDER);
+      } else {
+        const index = parsed.providers.findIndex(p => p.id === 'antsk');
+        parsed.providers[index] = {
+          ...DEFAULT_PROVIDER,
+          apiKey: parsed.providers[index].apiKey,
+        };
       }
       // 迁移旧的 Veo 模型名为统一的 veo
       const videoModelName = parsed.currentConfig?.videoModel?.modelName || '';
@@ -254,8 +260,8 @@ export const getImageApiUrl = (): string => {
   const config = getCurrentConfig();
   const provider = getProviderById(config.imageModel.providerId) || getDefaultProvider();
   const baseUrl = provider.baseUrl.replace(/\/+$/, '');
-  const modelName = config.imageModel.modelName || 'gemini-3-pro-image-preview';
-  const endpoint = config.imageModel.endpoint || `/v1beta/models/${modelName}:generateContent`;
+  const modelName = config.imageModel.modelName || 'gpt-image-2';
+  const endpoint = config.imageModel.endpoint || '/v1/images/generations';
   return `${baseUrl}${endpoint}`;
 };
 
@@ -397,6 +403,7 @@ export const AVAILABLE_CHAT_MODELS = [
  * 预定义的画图模型列表
  */
 export const AVAILABLE_IMAGE_MODELS = [
+  { name: 'GPT Image 2', value: 'gpt-image-2', description: '默认推荐图片生成模型' },
   { name: 'Gemini 3 Pro Image', value: 'gemini-3-pro-image-preview', description: '高质量图片生成' },
 ];
 

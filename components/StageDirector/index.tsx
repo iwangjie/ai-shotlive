@@ -282,7 +282,7 @@ const StageDirector: React.FC<Props> = ({ project, updateProject, onApiKeyError,
     try {
       const refResult = getRefImagesForShot(shot, project.scriptData);
       const activeImageModel = getActiveModel('image');
-      const imageModelId = (activeImageModel as any)?.apiModel || activeImageModel?.id || 'gemini-3-pro-image-preview';
+      const imageModelId = (activeImageModel as any)?.apiModel || activeImageModel?.id || 'gpt-image-2';
 
       // 生成尾帧时，将首帧图片作为额外参考图注入（排在最前面，优先级最高）
       let finalRefImages = refResult.images;
@@ -987,7 +987,7 @@ const StageDirector: React.FC<Props> = ({ project, updateProject, onApiKeyError,
       
       // 4. 通过服务端生成九宫格图片（和关键帧一样走 server-side，避免 CORS + 正确使用参考图）
       const activeImageModel = getActiveModel('image');
-      const imageModelId = (activeImageModel as any)?.apiModel || activeImageModel?.id || 'gemini-3-pro-image-preview';
+      const imageModelId = (activeImageModel as any)?.apiModel || activeImageModel?.id || 'gpt-image-2';
       
       const imageUrl = await generateImageServerSide(
         project.id,

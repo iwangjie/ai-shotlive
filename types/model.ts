@@ -300,7 +300,7 @@ export const BUILTIN_CHAT_MODELS: ChatModelDefinition[] = [
   },
   // ========== Anthropic ==========
   // 注意：Anthropic 官方 API 使用 /v1/messages 格式，与 OpenAI 格式不同。
-  // 如直接使用 Anthropic 官方 Key，需通过兼容代理或使用 AiShotlive API。
+  // 如直接使用 Anthropic 官方 Key，需通过兼容代理或使用 0-0 一站式平台。
   {
     id: 'claude-opus-4-8',
     name: 'Claude Opus 4.8',
@@ -458,9 +458,9 @@ export const BUILTIN_IMAGE_MODELS: ImageModelDefinition[] = [
     id: 'gpt-image-2',
     name: 'GPT Image 2',
     type: 'image',
-    providerId: 'openai',
+    providerId: 'antsk',
     endpoint: '/v1/images/generations',
-    description: 'OpenAI 最新图片生成模型，适合高质量关键帧和分镜图生成',
+    description: 'GPT Image 2 图片生成模型（通过 0-0 一站式平台），适合高质量关键帧和分镜图生成',
     isBuiltIn: true,
     isEnabled: true,
     params: { ...DEFAULT_IMAGE_PARAMS, supportedAspectRatios: ['16:9', '9:16', '1:1'] as AspectRatio[], apiFormat: 'openai-image' as ImageApiFormat },
@@ -504,7 +504,7 @@ export const BUILTIN_IMAGE_MODELS: ImageModelDefinition[] = [
     name: '可灵 Image O1',
     type: 'image',
     providerId: 'antsk',
-    description: '可灵 AI 图片生成模型（通过 AiShotlive API 代理）',
+    description: '可灵 AI 图片生成模型（通过 0-0 一站式平台 代理）',
     isBuiltIn: true,
     isEnabled: true,
     params: { ...DEFAULT_IMAGE_PARAMS, supportedAspectRatios: ['16:9', '9:16', '1:1'] as AspectRatio[] },
@@ -557,7 +557,7 @@ export const BUILTIN_VIDEO_MODELS: VideoModelDefinition[] = [
     type: 'video',
     providerId: 'antsk',
     endpoint: '/v1/chat/completions',
-    description: 'Veo 3.1 首尾帧模式（通过 AiShotlive API）',
+    description: 'Veo 3.1 首尾帧模式（通过 0-0 一站式平台）',
     isBuiltIn: true,
     isEnabled: true,
     params: { ...DEFAULT_VIDEO_PARAMS_VEO },
@@ -568,7 +568,7 @@ export const BUILTIN_VIDEO_MODELS: VideoModelDefinition[] = [
     type: 'video',
     providerId: 'antsk',
     endpoint: '/v1/videos',
-    description: '异步模式，支持横屏/竖屏（通过 AiShotlive API）',
+    description: '异步模式，支持横屏/竖屏（通过 0-0 一站式平台）',
     isBuiltIn: true,
     isEnabled: true,
     params: { ...DEFAULT_VIDEO_PARAMS_VEO_FAST },
@@ -600,7 +600,7 @@ export const BUILTIN_VIDEO_MODELS: VideoModelDefinition[] = [
     type: 'video',
     providerId: 'antsk',
     endpoint: '/v1/videos',
-    description: '可灵 VIDEO 3.0 Omni 最新视频模型（通过 AiShotlive API）',
+    description: '可灵 VIDEO 3.0 Omni 最新视频模型（通过 0-0 一站式平台）',
     isBuiltIn: true,
     isEnabled: true,
     params: {
@@ -618,7 +618,7 @@ export const BUILTIN_VIDEO_MODELS: VideoModelDefinition[] = [
     type: 'video',
     providerId: 'antsk',
     endpoint: '/v1/videos',
-    description: '可灵 VIDEO 3.0 视频模型（通过 AiShotlive API）',
+    description: '可灵 VIDEO 3.0 视频模型（通过 0-0 一站式平台）',
     isBuiltIn: true,
     isEnabled: true,
     params: {
@@ -636,7 +636,7 @@ export const BUILTIN_VIDEO_MODELS: VideoModelDefinition[] = [
     type: 'video',
     providerId: 'antsk',
     endpoint: '/v1/videos',
-    description: 'Vidu Q3 Pro 视频生成（通过 AiShotlive API）',
+    description: 'Vidu Q3 Pro 视频生成（通过 0-0 一站式平台）',
     isBuiltIn: true,
     isEnabled: true,
     params: {
@@ -701,14 +701,33 @@ export const BUILTIN_VIDEO_MODELS: VideoModelDefinition[] = [
 ];
 
 /**
+ * 内置音频/TTS 模型列表
+ */
+export const BUILTIN_AUDIO_MODELS: AudioModelDefinition[] = [
+  {
+    id: 'gemini-2.5-flash-tts',
+    name: 'Gemini 2.5 Flash TTS',
+    type: 'audio',
+    providerId: 'antsk',
+    endpoint: '/v1/audio/speech',
+    description: 'Gemini 2.5 Flash TTS 文本转语音模型（通过 0-0 一站式平台）',
+    isBuiltIn: true,
+    isEnabled: true,
+    params: {
+      supportedLanguages: ['zh', 'en', 'ja', 'ko'],
+    },
+  },
+];
+
+/**
  * 内置提供商列表
  */
 export const BUILTIN_PROVIDERS: ModelProvider[] = [
   {
     id: 'antsk',
-    name: 'AiShotlive API (api.antsk.cn)',
-    baseUrl: 'https://api.antsk.cn',
-    apiKeyUrl: 'https://api.antsk.cn',
+    name: '0-0 一站式平台 (api.0-0.pro)',
+    baseUrl: 'https://api.0-0.pro',
+    apiKeyUrl: 'https://api.0-0.pro',
     isBuiltIn: true,
     isDefault: true,
   },
@@ -809,6 +828,7 @@ export const ALL_BUILTIN_MODELS: ModelDefinition[] = [
   ...BUILTIN_CHAT_MODELS,
   ...BUILTIN_IMAGE_MODELS,
   ...BUILTIN_VIDEO_MODELS,
+  ...BUILTIN_AUDIO_MODELS,
 ];
 
 /**
@@ -816,7 +836,7 @@ export const ALL_BUILTIN_MODELS: ModelDefinition[] = [
  */
 export const DEFAULT_ACTIVE_MODELS: ActiveModels = {
   chat: 'gpt-5.5',
-  image: 'gemini-3-pro-image-preview',
+  image: 'gpt-image-2',
   video: 'veo_3_1-fast',
-  audio: '',  // 音频模型需用户配置
+  audio: 'gemini-2.5-flash-tts',
 };

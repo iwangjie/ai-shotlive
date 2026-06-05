@@ -98,12 +98,11 @@ export const loadRegistry = (): ModelRegistryState => {
         if (existingIndex === -1) {
           parsed.providers.unshift(bp);
         } else {
-          // 同步内置提供商的结构性字段（如 apiKeyUrl、name），保留用户自定义的 apiKey 和 baseUrl
+          // 同步内置提供商的结构性字段（如 apiKeyUrl、name/baseUrl），保留用户自定义的 apiKey
           const existing = parsed.providers[existingIndex];
           parsed.providers[existingIndex] = {
             ...bp,
             apiKey: existing.apiKey,
-            baseUrl: existing.baseUrl,
           };
         }
       });
@@ -158,7 +157,6 @@ export const loadRegistry = (): ModelRegistryState => {
           parsed.models[existingIndex] = {
             ...bm,
             isEnabled: existing.isEnabled,
-            providerId: existing.providerId || bm.providerId,
             params: mergedParams as any,
           };
         }
@@ -190,6 +188,10 @@ export const loadRegistry = (): ModelRegistryState => {
         parsed.activeModels.chat = 'gpt-5.5';
         activeChatModelMigrated = true;
       }
+      if (!parsed.activeModels.image) {
+        parsed.activeModels.image = 'gpt-image-2';
+        activeModelMigrated = true;
+      }
       if (
         deprecatedVideoModelIds.includes(parsed.activeModels.video) ||
         parsed.activeModels.video === 'veo_3_1' ||
@@ -204,7 +206,7 @@ export const loadRegistry = (): ModelRegistryState => {
 
       // 迁移：确保 activeModels.audio 存在
       if (!('audio' in parsed.activeModels) || parsed.activeModels.audio === undefined) {
-        parsed.activeModels.audio = '';
+        parsed.activeModels.audio = 'gemini-2.5-flash-tts';
       }
       
       registryState = parsed;
@@ -618,7 +620,7 @@ export const getApiBaseUrlForModel = (modelId: string): string => {
 
 /**
  * 已知不支持浏览器 CORS 的提供商 baseUrl → 本地代理路径映射
- * antsk (https://api.antsk.cn) 是代理服务本身，支持 CORS，不需要映射
+ * antsk (https://api.0-0.pro) 是代理服务本身，支持 CORS，不需要映射
  */
 const CORS_PROXY_MAP: Record<string, string> = {
   'https://api.openai.com':                       '/api/proxy/openai',

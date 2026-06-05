@@ -423,15 +423,15 @@ const GlobalSettings: React.FC<GlobalSettingsProps> = ({ onRefresh }) => {
           <div className="flex-1">
             <h3 className="text-base font-bold text-[var(--text-primary)] mb-1 flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-[var(--warning-text)]" />
-              推荐使用 AiShotlive API
+              推荐使用 0-0 一站式平台
             </h3>
             <p className="text-xs text-[var(--text-tertiary)] mb-3 leading-relaxed">
               支持 GPT-5.5、GPT-5.2、Claude Opus 4.8、Gemini-3.1、Veo 3.1、豆包 Seedance 2.0、可灵 VIDEO 3.0 等多种模型。
-              稳定快速，价格优惠。本开源项目由 AiShotlive API 提供支持。
+              稳定快速，价格优惠。本开源项目由 0-0 一站式平台 提供支持。
             </p>
             <div className="flex items-center gap-3">
               <a 
-                href="https://api.antsk.cn" 
+                href="https://api.0-0.pro" 
                 target="_blank" 
                 rel="noreferrer"
                 className="px-4 py-2 bg-[var(--btn-primary-bg)] text-[var(--btn-primary-text)] text-xs font-bold rounded-lg hover:bg-[var(--btn-primary-hover)] transition-colors inline-flex items-center gap-1.5"

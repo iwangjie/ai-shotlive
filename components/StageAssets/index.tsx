@@ -314,7 +314,7 @@ const StageAssets: React.FC<Props> = ({ project, updateProject, onApiKeyError, o
       }
 
       const activeImgModel = getActiveImageModel();
-      const imgModelId = activeImgModel?.apiModel || activeImgModel?.id || 'gemini-3-pro-image-preview';
+      const imgModelId = activeImgModel?.apiModel || activeImgModel?.id || 'gpt-image-2';
       const imageUrl = await generateImageServerSide(
         project.id,
         enhancedPrompt,
@@ -854,7 +854,7 @@ const StageAssets: React.FC<Props> = ({ project, updateProject, onApiKeyError, o
       enhancedPrompt += '. IMPORTANT: This is a standalone prop/item shot with absolutely NO people, NO human figures, NO characters - object only on clean/simple background.';
 
       const activeImgModel2 = getActiveImageModel();
-      const imgModelId2 = activeImgModel2?.apiModel || activeImgModel2?.id || 'gemini-3-pro-image-preview';
+      const imgModelId2 = activeImgModel2?.apiModel || activeImgModel2?.id || 'gpt-image-2';
       const imageUrl = await generateImageServerSide(
         project.id, enhancedPrompt, imgModelId2,
         {
@@ -1037,7 +1037,7 @@ const StageAssets: React.FC<Props> = ({ project, updateProject, onApiKeyError, o
       const enhancedPrompt = `${regionalPrefix}Character "${char.name}" wearing NEW OUTFIT: ${variation.visualPrompt}. This is a costume/outfit change - the character's face and identity must remain identical to the reference, but they should be wearing the described new outfit.`;
       
       const activeImgModelVar = getActiveImageModel();
-      const imgModelIdVar = activeImgModelVar?.apiModel || activeImgModelVar?.id || 'gemini-3-pro-image-preview';
+      const imgModelIdVar = activeImgModelVar?.apiModel || activeImgModelVar?.id || 'gpt-image-2';
       const imageUrl = await generateImageServerSide(
         project.id, enhancedPrompt, imgModelIdVar,
         { referenceImages: refImages, aspectRatio, isVariation: true }

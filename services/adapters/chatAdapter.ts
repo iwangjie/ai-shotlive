@@ -177,7 +177,7 @@ export const callChatApi = async (
  */
 export const verifyApiKey = async (apiKey: string, baseUrl?: string): Promise<{ success: boolean; message: string }> => {
   try {
-    const url = mapToProxyUrl((baseUrl || 'https://api.antsk.cn').replace(/\/+$/, ''));
+    const url = mapToProxyUrl((baseUrl || 'https://api.0-0.pro').replace(/\/+$/, ''));
     const testModel = getActiveChatModel()?.apiModel || getActiveChatModel()?.id || 'gpt-5.5';
     
     const response = await fetch(`${url}/v1/chat/completions`, {

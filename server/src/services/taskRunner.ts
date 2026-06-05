@@ -1229,7 +1229,7 @@ const resolveModelConfig = (
     throw new Error(`模型 ${model.id} 的提供商 ${model.providerId} 未设置 API Key`);
   }
 
-  const apiBase = (provider?.baseUrl || 'https://api.antsk.cn').replace(/\/+$/, '');
+  const apiBase = (provider?.baseUrl || 'https://api.0-0.pro').replace(/\/+$/, '');
 
   return { apiBase, apiKey, model, provider };
 };

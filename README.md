@@ -114,13 +114,13 @@
 
 | 类型 | 支持厂商示例 |
 |------|----------------|
-| **文本 (Chat)** | OpenAI、Anthropic、DeepSeek、豆包、通义千问、智谱、Google Gemini、xAI、AntSK、SiliconFlow、Moonshot、OpenRouter 等 |
-| **图像 (Image)** | Google Gemini、豆包 Seedream、通义万相、可灵 Image（AntSK）等 |
-| **视频 (Video)** | Veo 3.1 / Sora-2（AntSK/OpenAI）、豆包 Seedance、可灵、Vidu、万象（通义）等 |
+| **文本 (Chat)** | OpenAI、Anthropic、DeepSeek、豆包、通义千问、智谱、Google Gemini、xAI、0-0、SiliconFlow、Moonshot、OpenRouter 等 |
+| **图像 (Image)** | GPT Image、Google Gemini、豆包 Seedream、通义万相、可灵 Image（0-0）等 |
+| **视频 (Video)** | Veo 3.1、豆包 Seedance、可灵、Vidu、万象（通义）等 |
 | **音频 (Audio)** | 用于 AI 字幕整理与 TTS 配音，可配置对话模型或 TTS 专用模型 |
 
 - 在 **模型配置** 中为各提供商填写 API Key，并选择当前激活的文本/图像/视频/音频模型。
-- 默认推荐使用 [**AntSK API**](https://api.antsk.cn/) 一站式调用多类模型；也可使用各厂商官方 API，按需切换。
+- 默认推荐使用 [**0-0 一站式平台**](https://api.0-0.pro/) 一站式调用多类模型；也可使用各厂商官方 API，按需切换。
 
 ---
 

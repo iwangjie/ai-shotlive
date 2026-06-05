@@ -293,7 +293,7 @@ export type VideoDuration = 4 | 8 | 12;
 export interface ModelProvider {
   id: string;
   name: string;
-  baseUrl: string;  // API 基础 URL，如 'https://api.antsk.cn'
+  baseUrl: string;  // API 基础 URL，如 'https://api.0-0.pro'
   apiKey?: string;  // 可选的独立 API Key（如果不设置则使用全局 API Key）
   isDefault?: boolean;  // 是否为默认提供商
   isBuiltIn?: boolean;  // 是否为内置提供商（不可删除）
@@ -313,7 +313,7 @@ export interface ChatModelConfig {
  */
 export interface ImageModelConfig {
   providerId: string;
-  modelName: string;  // 如 'gemini-3-pro-image-preview'
+  modelName: string;  // 如 'gpt-image-2'
   endpoint?: string;  // API 端点，默认为 '/v1beta/models/{modelName}:generateContent'
 }
 

@@ -9,7 +9,7 @@
 
 **AI shotlive Director** is an **AI-powered, one-stop platform** for **short dramas** and **motion comics**, built for creators who want to go from idea to final video fast.
 
-Moving away from the traditional "slot machine" style of random generation, AiShotlive adopts an industrial **"Script-to-Asset-to-Keyframe"** workflow. With deep integration of AntSK API’s advanced AI models, it enables **one-sentence to complete drama** — fully automated from **script** to **final video**, while maintaining precise control over character consistency, scene continuity, and camera movement.
+Moving away from the traditional "slot machine" style of random generation, AiShotlive adopts an industrial **"Script-to-Asset-to-Keyframe"** workflow. With deep integration of 0-0 一站式平台’s advanced AI models, it enables **one-sentence to complete drama** — fully automated from **script** to **final video**, while maintaining precise control over character consistency, scene continuity, and camera movement.
 ## UI Showcase
 
 ### Project Management
@@ -96,14 +96,14 @@ Traditional Text-to-Video models often struggle with specific camera movements a
 | **Files** | Novel uploads in `uploads/`, media files (images/videos) in `data/`, isolated by user/project |
 | **Backup** | ZIP archive export/import (database + media files); import auto-creates a new user |
 
-## Why Choose AntSK API?
+## Why Choose 0-0 一站式平台?
 
-This project deeply integrates [**AntSK API Platform**](https://api.antsk.cn/), delivering exceptional value for creators:
+This project deeply integrates [**0-0 一站式平台**](https://api.0-0.pro/), delivering exceptional value for creators:
 
 ### 🎯 Full Model Coverage
 * **Text Models**: GPT-5.2, GPT-5.1, Claude 3.5 Sonnet
 * **Vision Models**: Gemini 3 Pro, Nano Banana Pro
-* **Video Models**: Sora-2, Veo-3.1 (with keyframe interpolation)
+* **Video Models**: Veo 3.1, Kling, Seedance, Vidu, Wan
 * **Unified Access**: Single API for all models, no platform switching
 
 ### 💰 Unbeatable Pricing
@@ -116,11 +116,11 @@ This project deeply integrates [**AntSK API Platform**](https://api.antsk.cn/), 
 * **Comprehensive Docs**: Full API documentation and code examples
 * **Real-Time Monitoring**: Visual usage stats and cost tracking
 
-[**Sign Up for Free Credits**](https://api.antsk.cn/) →
+[**Sign Up for Free Credits**](https://api.0-0.pro/) →
 
 ## ⚠️ Open-Source & “Free” Clarification (Please Read)
 
-* **Model usage note**: This open-source project’s default workflow requires a capability-matched model stack, for example an LLM (such as **GPT-5.2**), an image model (such as **Nano Banana Pro**), and a video model (such as **Sora-2** / **Veo-3.1**). If you want to connect other providers or models, you can modify and adapt it yourself.
+* **Model usage note**: This open-source project’s default workflow requires a capability-matched model stack, for example an LLM (such as **GPT-5.5**), an image model (such as **GPT Image 2**), and a video model (such as **Veo 3.1**). If you want to connect other providers or models, you can modify and adapt it yourself.
 * **Why we open-sourced this**: Our goal is to lower the barrier to entry and make creation more accessible. The project code is open-source, and model configuration is replaceable.
 * **About our API service**: The API we provide is mainly for quick experience and integration, not as a core profit source.
 * **Freedom of choice**: If our API does not meet your expectations, you can absolutely use official OpenAI or Google services directly (even at a higher price). That is a normal and respected choice.

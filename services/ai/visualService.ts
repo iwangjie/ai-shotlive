@@ -733,7 +733,7 @@ const generateImageOpenAI = async (
       throw new Error(
         `无法连接到 ${apiBase}（浏览器跨域限制）。` +
         `该提供商的 API 不支持浏览器直接调用。` +
-        `请在模型配置中将该模型的提供商切换为支持浏览器调用的代理服务（如 AiShotlive API）。`
+        `请在模型配置中将该模型的提供商切换为支持浏览器调用的代理服务（如 0-0 一站式平台）。`
       );
     }
     throw fetchError;
@@ -826,7 +826,7 @@ export const generateImage = async (
   const startTime = Date.now();
 
   const activeImageModel = getActiveModel('image') as ImageModelDefinition | undefined;
-  const imageModelId = activeImageModel?.apiModel || activeImageModel?.id || 'gemini-3-pro-image-preview';
+  const imageModelId = activeImageModel?.apiModel || activeImageModel?.id || 'gpt-image-2';
   const imageModelEndpoint = activeImageModel?.endpoint || `/v1beta/models/${imageModelId}:generateContent`;
   const apiKey = checkApiKey('image', activeImageModel?.id);
   const apiBase = getApiBase('image', activeImageModel?.id);
